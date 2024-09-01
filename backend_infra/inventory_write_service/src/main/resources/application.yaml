@@ -1,0 +1,37 @@
+spring:
+
+  #  RabbitMQ
+  #  rabbitmq:
+  #    port: 5672
+  #    username: finzo
+  #    password: finzo_service
+
+  #Postgres
+  datasource:
+    url: jdbc:postgresql://localhost:5432/finzo_inventory
+    username: postgres
+    password: password
+  #JPA
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  profiles:
+    active: native
+  application:
+    name: inventory_write_service
+
+  config:
+    import:
+      - optional:configserver:http://localhost:8988
+
+#rabbitmq:
+#  queue:
+#    name: finzo_queue_user
+#  exchange:
+#    name: finzo_exchange
+#  routing:
+#    key: finzo_exchange_user

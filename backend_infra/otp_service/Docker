@@ -1,0 +1,5 @@
+FROM openjdk:17
+LABEL maintainer = "otp_service"
+ADD target/otp_service-0.0.1-SNAPSHOT.jar otp_service.jar
+EXPOSE 8025
+ENTRYPOINT ["java","-jar","otp_service.jar"]

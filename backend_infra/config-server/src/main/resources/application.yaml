@@ -1,0 +1,6 @@
+server:
+  port: 8988
+
+spring:
+  profiles:
+    active: native

@@ -1,0 +1,45 @@
+server:
+  port:
+    6000
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+
+        - id: finzo-auth-service
+          uri: lb://finzo-auth-service
+          predicates:
+          - Path=/finzo_auth/**
+          filters:
+            - AuthFilter
+
+        - id: otp_service
+          uri: lb://otp_service
+          predicates:
+            - Path=/otp-service/**
+          filters:
+            - AuthFilter
+#        - id: image-service
+#          uri: lb://image-service
+#          predicates:
+#            - Path=/image/**
+#          filters:
+#            - AuthFilter
+#        - id: recommendation-service
+#          uri: lb://recommendation-service
+#          predicates:
+#            - Path=/recommendation/**
+#          filters:
+#            - AuthFilter
+#        - id: websocket
+#          uri: lb://websocket
+#          predicates:
+#            - Path=/chat/**
+#          filters:
+#            - AuthFilter
+eureka:
+  instance:
+    prefer-ip-address: true

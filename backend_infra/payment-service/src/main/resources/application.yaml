@@ -1,0 +1,10 @@
+
+spring:
+  application:
+      name: payment-service
+
+
+stripe:
+  apiKey: sk_test_51Pt9B9BmAczn3UbfyORXymc50yXdyh0tSj8pWlR3XxMj8aulPNx4aWHKw9xYwEo0dH5eDMRO7f8BcdFsY59jFET600IyliFaff
+  publishableKey: pk_test_51Pt9B9BmAczn3UbfamvRi4sIRX0E0ZHoIVJdaAlssb4xWBGxzzjX7wO9n5hleruKMCsb9zoP1DaNxGaXdpOI85qq00marSEqlc
+  webHookSecret: whsec_858219f19f0f49e5fdafed9cf98860d0d30da5846a210b94493005625c4af95a
