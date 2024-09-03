@@ -6,13 +6,9 @@ import org.example.elasticsearch.entity.Product;
 import org.example.elasticsearch.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -60,6 +56,7 @@ public class MainController {
         }
     }
 
+    @GetMapping("/search/keyword")
     public ResponseEntity<List<Product>> searchByFuzzy(@RequestParam String searchKeyWord){
         try {
             return  ResponseEntity.ok().body(productService.searchByFuzzy(searchKeyWord));
@@ -69,6 +66,7 @@ public class MainController {
         }
     }
 
+    @GetMapping("/search/cr/")
     public ResponseEntity<List<Product>> searchByFuzzyAndRange(@RequestParam String searchKeyWord, @RequestParam int min ,@RequestParam int max){
         try {
             return  ResponseEntity.ok().body(productService.searchByFuzzyRage(searchKeyWord,min, max));
@@ -77,6 +75,7 @@ public class MainController {
 
         }
     }
+
     public ResponseEntity<List<Product>> searchByExact(@RequestParam String searchKeyWord){
         try {
             return  ResponseEntity.ok().body(productService.searchByExact(searchKeyWord));

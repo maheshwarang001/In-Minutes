@@ -1,9 +1,9 @@
-package org.example.elasticsearch.repository;
-
-import org.springframework.stereotype.Service;
-
-@Service
-public class ProductService {
-
-
-}
+//package org.example.elasticsearch.repository;
+//
+//import org.springframework.stereotype.Service;
+//
+//@Service
+//public class ProductService {
+//
+//
+//}

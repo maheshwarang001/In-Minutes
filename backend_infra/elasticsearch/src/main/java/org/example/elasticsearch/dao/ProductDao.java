@@ -68,11 +68,11 @@ public class ProductDao {
                 existingProduct.setManufacturerName(product.getManufacturerName());
             }
 
-            if (product.getStoreInfoList() != null && !product.getStoreInfoList().isEmpty()) {
-                Set<UUID> updatedStoreInfoList = new HashSet<>(existingProduct.getStoreInfoList());
-                updatedStoreInfoList.addAll(product.getStoreInfoList());
-                existingProduct.setStoreInfoList( new ArrayList<>(updatedStoreInfoList));
-            }
+//            if (product.getStoreInfoList() != null && !product.getStoreInfoList().isEmpty()) {
+//                Set<UUID> updatedStoreInfoList = new HashSet<>(existingProduct.getStoreInfoList());
+//                updatedStoreInfoList.addAll(product.getStoreInfoList());
+//                existingProduct.setStoreInfoList( new ArrayList<>(updatedStoreInfoList));
+//            }
 
             if (product.getCost() != -1) {
                 existingProduct.setCost(product.getCost());

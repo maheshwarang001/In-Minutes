@@ -17,7 +17,6 @@ import java.util.UUID;
 @Data
 @Document(indexName = "product_index")
 @NoArgsConstructor
-@AllArgsConstructor
 public class Product implements Serializable {
 
     @Id
@@ -40,9 +39,10 @@ public class Product implements Serializable {
 
     private boolean active;
 
-    private List<UUID> storeInfoList;
 
-    public Product(String productName, String productDescription, String productCategory, int cost, String productSubCategory, String productSubProductCategory, String manufacturerName, boolean active, List<UUID> storeInfoList) {
+
+    public Product(UUID productId, String productName, String productDescription, String productCategory, int cost, String productSubCategory, String productSubProductCategory, String manufacturerName, boolean active) {
+        this.productId = productId;
         this.productName = productName;
         this.productDescription = productDescription;
         this.productCategory = productCategory;
@@ -51,6 +51,5 @@ public class Product implements Serializable {
         this.productSubProductCategory = productSubProductCategory;
         this.manufacturerName = manufacturerName;
         this.active = active;
-        this.storeInfoList = storeInfoList;
     }
 }

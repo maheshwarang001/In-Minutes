@@ -1,0 +1,20 @@
+spring:
+
+  data:
+    elasticsearch:
+      cluster-nodes: localhost:9200
+      cluster-name: my-elasticsearch-cluster
+
+
+
+
+  application:
+    name: search_service
+
+  profiles:
+    active: native
+
+
+  config:
+    import:
+      - optional:configserver:http://localhost:8988

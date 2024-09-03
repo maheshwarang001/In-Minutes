@@ -1,6 +1,7 @@
 package org.example.elasticsearch.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.elasticsearch.entity.Product;
@@ -12,9 +13,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ProductDto {
 
-
+    private UUID productId;
 
     private String productName;
 
@@ -32,22 +34,21 @@ public class ProductDto {
 
     private boolean active;
 
-    private List<UUID> storeInfoList;
+
 
 
     public Product getProduct(ProductDto productDto){
 
         return new Product(
-
+                productDto.getProductId(),
                 productDto.getProductName(),
                 productDto.getProductDescription(),
                 productDto.getProductCategory(),
-                productDto.cost,
+                productDto.getCost(),
                 productDto.getProductSubCategory(),
                 productDto.getProductSubProductCategory(),
                 productDto.getManufacturerName(),
-                productDto.isActive(),
-                productDto.storeInfoList
+                productDto.isActive()
         );
 
     }
