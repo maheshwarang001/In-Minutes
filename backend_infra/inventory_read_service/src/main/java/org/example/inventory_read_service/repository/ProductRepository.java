@@ -20,7 +20,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<Product> getAllProduct();
 
 
-    @Query("SELECT ps FROM Product ps  WHERE ps.product_id = : id ")
+    @Query("SELECT ps FROM Product ps  WHERE ps.product_id = :id ")
     Optional<Product> getProduct(@Param("id")UUID id);
 
 

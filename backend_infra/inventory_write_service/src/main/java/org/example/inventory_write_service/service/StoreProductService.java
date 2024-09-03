@@ -1,23 +1,35 @@
 package org.example.inventory_write_service.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.inventory_write_service.Producer.KafkaMessageProducer;
+import org.example.inventory_write_service.configuration.Topics;
 import org.example.inventory_write_service.dao.DarkStoreDao;
 import org.example.inventory_write_service.dao.ProductDao;
 import org.example.inventory_write_service.dao.StoreProductDao;
+import org.example.inventory_write_service.dto.DarkStoreProductDto;
+import org.example.inventory_write_service.dto.Event;
+import org.example.inventory_write_service.dto.EventType;
 import org.example.inventory_write_service.entity.inventory.product.Product;
 import org.example.inventory_write_service.entity.store.DarkStore;
 import org.example.inventory_write_service.entity.store.StoreProduct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDateTime;
 import java.util.*;
+
+import static org.example.inventory_write_service.service.InventoryService.serialize;
 
 @Service
 @Slf4j
 public class StoreProductService {
 
     final static String storeProductEntity = "store-product";
+
+    @Autowired
+    private KafkaMessageProducer kafkaMessageProducer;
 
     @Autowired
     private StoreProductDao storeProductDao;
@@ -50,7 +62,6 @@ public class StoreProductService {
 
         Optional<DarkStore> darkStoreQuery = darkStoreDao.findStoreById(darkStoreId);
         Optional<Product> productQuery = productDao.findProductById(productId);
-
 
 
         if(darkStoreQuery.isPresent() && productQuery.isPresent()){
@@ -100,11 +111,34 @@ public class StoreProductService {
         }
     }
 
-    private void updateItemToStore(DarkStore darkStore, Product product, int qty, boolean inStock){
+    @Transactional
+    protected void updateItemToStore(DarkStore darkStore, Product product, int qty, boolean inStock){
         StoreProduct storeProduct = new StoreProduct(darkStore, product, qty, inStock);
         storeProductDao.save(storeProduct);
+        sendMessage(darkStore.getStore_ID(),product.getProduct_id(),qty);
     }
 
+    private void sendMessage(UUID darkStoreId, UUID productId, int qty){
+
+        byte[] s = serialize(
+                DarkStoreProductDto
+                        .builder()
+                        .darkStore(darkStoreId)
+                        .product(productId)
+                        .qty(qty).build()
+        );
+
+        kafkaMessageProducer.sendMessage(
+                Event.builder()
+                        .eventType(EventType.CREATE )
+                        .entity(storeProductEntity)
+                        .object(s)
+                        .timeStamp(LocalDateTime.now())
+                        .build()
+                ,
+                Topics.TOPIC_INVENTORY
+        );
+    }
     public void updateQtyAddStock(UUID storeId, UUID productId, int qty) {
         try {
 

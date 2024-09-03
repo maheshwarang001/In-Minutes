@@ -31,8 +31,8 @@ public interface StoreProductRepository extends JpaRepository<StoreProduct, UUID
 
 
 
-    @Query("SELECT ps FROM StoreProduct  ps WHERE  ps.store.store_ID = :darkStoreId AND ps.product.product_id = :productId")
-    Optional<StoreProduct> getProductByDarkStore(@Param("darkStoreId") UUID darkStoreId , @Param("productId") UUID productId );
+    @Query("SELECT ps FROM StoreProduct ps WHERE ps.store.store_ID = :darkStoreId AND ps.product.product_id = :productId")
+    Optional<StoreProduct> getProductByDarkStore(@Param("darkStoreId") UUID darkStoreId, @Param("productId") UUID productId);
 
 
 

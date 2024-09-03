@@ -23,9 +23,8 @@ import java.util.UUID;
 public class KafkaDistributorConsumer {
 
 
-//    @Autowired
-//    private InventoryService inventoryService;
-
+    @Autowired
+    private StoreProductService storeProductService;
     @Autowired
     private CategoryService categoryService;
 
@@ -42,8 +41,6 @@ public class KafkaDistributorConsumer {
     @Autowired
     private ProductService productService;
 
-    @Autowired
-    private StoreProductService storeProductService;
 
     @Autowired
     private StoreService storeService;
@@ -155,12 +152,11 @@ public class KafkaDistributorConsumer {
                 }
 
             }
+
             case "store-product" ->{
 
-                if(event.getEventType() == EventType.CREATE){
-                    StoreProductDto storeProductDto = deserialize(event.getObject() , StoreProductDto.class);
-                    storeProductService.createStoreProduct(storeProductDto);
-                }
+                DarkStoreProductDto darkStoreProductDto = deserialize(event.getObject(),DarkStoreProductDto.class);
+                storeProductService.updateProductInStore(darkStoreProductDto);
 
             }
 

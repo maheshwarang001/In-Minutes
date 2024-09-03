@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -46,4 +47,10 @@ public class StoreService {
             throw  e;
         }
     }
+
+
+    public Optional<DarkStore> findDarkStoreById(UUID id){
+        return darkStoreDao.findStoreById(id);
+    }
+
 }

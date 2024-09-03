@@ -11,10 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
@@ -55,6 +52,11 @@ public class ProductService {
             throw e;
 
         }
+    }
+
+
+    public Optional<Product> findProduct(UUID id){
+        return productDao.getProductById(id);
     }
 
 

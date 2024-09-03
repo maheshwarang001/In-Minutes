@@ -29,6 +29,16 @@ public class StoreProductDao {
 
     public void saveStoreProduct( StoreProduct storeProduct){
 
+        Optional<StoreProduct> exist = storeProductRepository.getProductByDarkStore(
+                storeProduct.getStore().getStore_ID(),
+                storeProduct.getProduct().getProduct_id()
+        );
+
+        if(exist.isPresent()){
+            exist.get().setQuantity(storeProduct.getQuantity());
+            storeProductRepository.save(exist.get());
+        }
+        else storeProductRepository.save(storeProduct);
 
     }
 

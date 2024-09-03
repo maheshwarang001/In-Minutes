@@ -17,7 +17,8 @@ import java.util.UUID;
 public class StoreProduct implements Serializable {
 
     @Id
-    @Column(name = "store_product_id", nullable = false, updatable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "store_product_id")
     private UUID storeProduct_id;
 
     @ManyToOne
