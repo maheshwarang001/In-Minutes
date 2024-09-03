@@ -13,6 +13,7 @@ import org.example.inventory_write_service.entity.inventory.product.ProductCost;
 import org.example.inventory_write_service.entity.inventory.product.ProductDetails;
 import org.example.inventory_write_service.entity.inventory.subProductCategory.SubProductCategory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,9 +61,43 @@ public class ProductService {
                     Topics.TOPIC_INVENTORY
             );
 
+
+            customProductSearch(productDto);
+
         }catch (Exception e){
             throw e;
         }
+    }
+
+    @Async
+    public void customProductSearch(ProductDto productDto){
+
+        ProductSearchDto pp =
+                ProductSearchDto
+                .builder()
+                .productId(productDto.getProductId())
+                .productCategory(productDto.getSubProductCategory().getSubcategory().getCategory().getCategory_name().toString())
+                .productSubProductCategory(productDto.getSubProductCategory().getSubproductcategory_name())
+                .productSubCategory(productDto.getSubProductCategory().getSubcategory().getSubcategory_name())
+                .productName(productDto.getProductName())
+                .productDescription(productDto.getProductDetails().getProduct_description())
+                .cost(productDto.getProductCost().getMrp())
+                .manufacturerName(productDto.getProductManufacturer().getManufacturer_name())
+                .active(productDto.isActive())
+                .build();
+
+        System.out.println(pp.toString());
+
+        kafkaMessageProducer.sendMessage(
+                Event.builder()
+                        .eventType(EventType.CREATE )
+                        .entity("search-db")
+                        .object(serialize(pp))
+                        .timeStamp(LocalDateTime.now())
+                        .build()
+                ,
+                Topics.TOPIC_INVENTORY
+        );
     }
 
     public Product helperAddProductToInventory(ItemC itemC) throws Exception{

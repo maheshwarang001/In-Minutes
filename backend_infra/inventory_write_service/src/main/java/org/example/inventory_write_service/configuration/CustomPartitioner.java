@@ -29,7 +29,8 @@ public class CustomPartitioner implements Partitioner {
                 case "dark-store":
                     return 1;
 
-
+                case "search-db":
+                    return 2;
             }
 
         }

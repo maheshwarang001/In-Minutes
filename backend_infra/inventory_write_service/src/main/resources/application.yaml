@@ -24,9 +24,13 @@ spring:
   application:
     name: inventory_write_service
 
+
   config:
     import:
       - optional:configserver:http://localhost:8988
+
+#    import:
+#      - optional:configserver:http://localhost:8988
 
 #rabbitmq:
 #  queue:

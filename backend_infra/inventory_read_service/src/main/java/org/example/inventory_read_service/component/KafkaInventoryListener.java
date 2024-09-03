@@ -7,6 +7,7 @@ import org.example.inventory_read_service.entity.inventory.subcategory.SubCatego
 import org.example.inventory_read_service.model.Event;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.TopicPartition;
 import org.springframework.stereotype.Component;
 
 import java.io.ByteArrayInputStream;
@@ -23,8 +24,9 @@ public class KafkaInventoryListener {
     KafkaDistributorConsumer kafkaDistributorConsumer;
 
 
-    @KafkaListener(id="inventory-service-level", topics = "TOPIC_INVENTORY"
-            //properties = {"spring.json.value.default.type=org.example.inventory_read_service.model.Event"}
+    @KafkaListener(
+            id = "inventory-service-level",
+            topicPartitions = @TopicPartition(topic = "TOPIC_INVENTORY", partitions = {"0", "1"})
 
     )
     public void listen(Event event) {
