@@ -61,25 +61,32 @@ public class ProductService {
 
 
     @Async
-    public CompletableFuture<CartOrderResponseDto> checkProduct(CartOrderCheckList cartOrderCheckList) {
+    public CompletableFuture<EstimateCheckCartDto> checkProduct(QueryProduct QueryProduct) {
 
         AtomicReference<Double> totalCost = new AtomicReference<>(0.0);
         List<CompletableFuture<Void>> futures = new ArrayList<>();
-        CopyOnWriteArrayList<CartProductResponseDto> responseDto = new CopyOnWriteArrayList<>();
+        CopyOnWriteArrayList<ItemDetailsDto> responseDto = new CopyOnWriteArrayList<>();
 
         // Process each item concurrently
-        for (CartOrderItemDto itemDto : cartOrderCheckList.getCartOrderItemDtoList()) {
+        for (Item item : QueryProduct.getItems()) {
+
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                StoreProduct storeProduct = storeProductDao.getProductFromDarkStore(cartOrderCheckList.getStoreId(), itemDto.getProductId());
+                StoreProduct storeProduct = storeProductDao.getProductFromDarkStore(QueryProduct.getStoreId(), item.getProductId());
 
                 if (storeProduct != null) {
-                    double cost = storeProduct.getProduct().getProduct_cost().getMrp() * Math.min(storeProduct.getQuantity(), itemDto.getQty());
+
+                    log.info(storeProduct.getProduct().getProduct_name());
+
+                    double cost = storeProduct.getProduct().getProduct_cost().getMrp() * Math.min(storeProduct.getQuantity(), item.getQty());
                     totalCost.accumulateAndGet(cost, Double::sum);
 
-                    CartProductResponseDto cartProductResponseDto = CartProductResponseDto.builder()
-                            .id(storeProduct.getProduct().getProduct_id())
-                            .qty(Math.min(storeProduct.getQuantity(), itemDto.getQty()))
-                            .cost(storeProduct.getProduct().getProduct_cost().getMrp())
+                    ItemDetailsDto cartProductResponseDto = ItemDetailsDto.builder()
+                            .productId(storeProduct.getProduct().getProduct_id())
+                            .productName(storeProduct.getProduct().getProduct_name())
+                            .productImage(storeProduct.getProduct().getProduct_picture())
+                            .totalProductCost(Math.min(storeProduct.getQuantity() , item.getQty())  * storeProduct.getProduct().getProduct_cost().getMrp())
+                            .productCost(storeProduct.getProduct().getProduct_cost().getMrp())
+                            .qty(Math.min(storeProduct.getQuantity() , item.getQty()))
                             .build();
 
                     responseDto.add(cartProductResponseDto);
@@ -91,10 +98,19 @@ public class ProductService {
         // Wait for all tasks to complete
         CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
-        return allOf.thenApply(v -> CartOrderResponseDto.builder()
-                .responseDto(responseDto)
-                .totalCost(totalCost.get())
-                .build());
+        return allOf.thenApply(v ->
+
+                EstimateCheckCartDto.
+                        builder()
+                        .productDetailDtoList(responseDto)
+                        .invoiceProduct(InvoiceProduct.builder().totalProductCost(totalCost.get()).build())
+                        .build());
+
+
+//                CartOrderResponseDto.builder()
+//                .responseDto(responseDto)
+//                .totalCost(totalCost.get())
+//                .build());
     }
 
 

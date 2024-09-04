@@ -37,7 +37,7 @@ public class MainController {
     }
 
     @PostMapping("/user/create/address")
-    public ResponseEntity<Void> createAddressAndUser(@RequestParam AddressDto addressDto , @RequestParam UUID userId){
+    public ResponseEntity<Void> createAddressAndUser(@RequestBody AddressDto addressDto , @RequestParam UUID userId){
         userPrService.userAddress(addressDto, userId);
         return ResponseEntity.ok().body(null);
     }
@@ -46,9 +46,9 @@ public class MainController {
 
 
     @GetMapping("/increment")
-    public ResponseEntity<Void> increment(@RequestParam UUID userId, @RequestParam UUID productId, @RequestParam UUID storeId) {
+    public ResponseEntity<Void> increment(@RequestParam UUID userId, @RequestParam UUID productId) {
         try {
-            cartService.incrementProductIntoCart(userId, productId, storeId).get();
+            cartService.incrementProductIntoCart(userId, productId).get();
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             log.error(e.getLocalizedMessage(), e);
@@ -73,7 +73,7 @@ public class MainController {
         try {
 
             EstimateDto estimate = cartService.getEstimate(userId,addressId).get();
-            cartService.map.put(userId,estimate);
+            //cartService.map.put(userId,estimate);
             return ResponseEntity.ok().body(estimate);
 
         }catch (Exception e){

@@ -39,7 +39,6 @@ public class UserUtilityService {
         if(existingUser == null){
             User newUser = User.builder().userId(userId).build();
             userDao.saveUser(newUser);
-            existingUser = newUser;
         }
 
         Coordinate coordinate = new Coordinate(addressDto.getLat(),addressDto.getLog());

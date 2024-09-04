@@ -23,7 +23,7 @@ public class AddressOrder {
 
     private String postcode;
 
-    private Point customerLocation;
+    private double customerLocation;
 
     private UUID nearestStore;
 

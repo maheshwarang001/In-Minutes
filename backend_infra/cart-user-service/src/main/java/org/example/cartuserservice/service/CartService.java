@@ -41,8 +41,8 @@ public class CartService {
     }
 
     @Async
-    public CompletableFuture<Void> incrementProductIntoCart(UUID userId, UUID productId, UUID storeId) {
-        return CompletableFuture.runAsync(() -> cartUtils.incrementProductInCart(productId, userId, storeId));
+    public CompletableFuture<Void> incrementProductIntoCart(UUID userId, UUID productId) {
+        return CompletableFuture.runAsync(() -> cartUtils.incrementProductInCart(productId, userId));
     }
 
 
@@ -50,7 +50,7 @@ public class CartService {
     public CompletableFuture<EstimateDto> getEstimate(UUID userId, long addressId) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                map.remove(userId);
+                //map.remove(userId);
                 return cartUtils.provideEstimateDto(userId, addressId);
             } catch (Exception e) {
 
@@ -67,17 +67,17 @@ public class CartService {
 
                 EstimateDto estimateDto;
 
-                if (map.get(userId) == null) {
-                    log.info("Estimate for user {} not found in cache, fetching...", userId);
-                    try {
+//                if (map.get(userId) == null) {
+//                    log.info("Estimate for user {} not found in cache, fetching...", userId);
+//                    try {
                         estimateDto = getEstimate(userId, addressId).get();
-                    } catch (InterruptedException | ExecutionException e) {
-                        log.error("Error fetching estimate: {}", e.getMessage());
-                        throw new RuntimeException("Error fetching estimate", e);
-                    }
-                } else {
-                    estimateDto = map.get(userId);
-                }
+//                    } catch (InterruptedException | ExecutionException e) {
+//                        log.error("Error fetching estimate: {}", e.getMessage());
+//                        throw new RuntimeException("Error fetching estimate", e);
+//                    }
+//                } else {
+//                    estimateDto = map.get(userId);
+//                }
 
                 return OrderQueryDto.builder()
                         .cartId(estimateDto.getCartId())

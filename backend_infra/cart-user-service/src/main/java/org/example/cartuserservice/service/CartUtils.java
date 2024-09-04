@@ -42,7 +42,7 @@ public class CartUtils {
 
 
     @Transactional
-    public void incrementProductInCart(UUID productId, UUID userId, UUID storeId){
+    public void incrementProductInCart(UUID productId, UUID userId){
 
 
         User user = userDao.findUserById(userId);
@@ -136,6 +136,7 @@ public class CartUtils {
 
     @Transactional
     public EstimateDto provideEstimateDto(UUID userId, long addressId) throws ExecutionException, InterruptedException {
+
         // Fetch user and address asynchronously
         CompletableFuture<User> userFuture = CompletableFuture.supplyAsync(() -> userDao.findUserById(userId));
         CompletableFuture<Address> addressFuture = CompletableFuture.supplyAsync(() -> addressDao.getAddressByAddressId(addressId));
@@ -161,11 +162,13 @@ public class CartUtils {
                             .collect(Collectors.toList());
 
                     QueryProduct queryProduct = QueryProduct.builder()
-                            .storeId(storeId)
+                            .storeId( UUID.fromString("21894be5-92b6-490f-aa57-efb4f5a01894"))
                             .items(items)
                             .build();
 
                     EstimateCheckCartDto estimateCheckCartDto = checkPayableAndQty(queryProduct);
+
+                    log.info("" +estimateCheckCartDto.getInvoiceProduct().getTotalProductCost());
 
                     updateProductsBasedOnItemDetails(estimateCheckCartDto.getProductDetailDtoList(), allProducts);
 
@@ -193,8 +196,10 @@ public class CartUtils {
                             .build();
 
                     // Save the invoice and update the cart within the transaction
-                    invoiceDao.saveInvoice(saveInvoice);
-                    user.getCart().setInvoice(saveInvoice);
+                    //invoiceDao.saveInvoice(saveInvoice);
+                    Cart cart = user.getCart();
+                    cart.setInvoice(saveInvoice);
+                    cartDao.saveCart(cart);
 
                     EstimateDto estimateDto = EstimateDto.builder()
                             .cartId(user.getCart().getCartId())
@@ -205,7 +210,7 @@ public class CartUtils {
                                             .address(address.getAddress())
                                             .city(address.getCity())
                                             .postcode(address.getPostcode())
-                                            .customerLocation(address.getCustomerLocation())
+                                            //.customerLocation(address.getCustomerLocation())
                                             .nearestStore(address.getNearestStore())
                                             .build()
                             )
@@ -262,12 +267,13 @@ public class CartUtils {
             RestTemplate restTemplate = new RestTemplate();
 
             ResponseEntity<EstimateCheckCartDto> responseEntity = restTemplate.postForEntity(
-                    "",
+                    "http://localhost:8002/inventory-read/check/v1/cart/final",
                     queryProduct,
                     EstimateCheckCartDto.class
             );
 
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                log.info("Status 200");
                 return responseEntity.getBody();
 
             } else {
